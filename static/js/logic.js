@@ -26,7 +26,7 @@ d3.json(queryUrl, function(data) {
     return {
       opacity: 1,
       fillOpacity: 1,
-      fillColor: markerColor(feature.properties.mag),
+      fillColor: markerColor(feature.geometry.coordinates[2]),
       color: "#000000",
       radius: markerRadius(feature.properties.mag),
       stroke: true,
@@ -34,20 +34,14 @@ d3.json(queryUrl, function(data) {
     };
   }
   // set different color from magnitude
-    function markerColor(magnitude) {
+    function markerColor(depth) {
     switch (true) {
-    case magnitude > 5:
-      return "#ea2c2c";
-    case magnitude > 4:
-      return "#ea822c";
-    case magnitude > 3:
-      return "#ee9c00";
-    case magnitude > 2:
-      return "#eecc00";
-    case magnitude > 1:
-      return "#d4ee00";
+    case depth > 300:
+      return "red";
+    case depth  > 70:
+      return "orange";
     default:
-      return "#98ee00";
+      return "yellow";
     }
   }
   // get the marker Radius using the magnitude
@@ -79,20 +73,18 @@ d3.json(queryUrl, function(data) {
     legend.onAdd = function() {
       var div = L.DomUtil.create("div", "marker legend");
   
-      var grades = [0, 1, 2, 3, 4, 5];
+      var grades = ["shallow","medium","deep"];
       var colors = [
         "#98ee00",
         "#d4ee00",
         "#eecc00",
-        "#ee9c00",
-        "#ea822c",
-        "#ea2c2c"
+
       ];
   
       for (var i = 0; i < grades.length; i++) {
         div.innerHTML +=
           "<i style='background: " + colors[i] + "'> " +
-          grades[i] + (grades[i + 1] ? "&ndash;" + grades[i + 1] + "</i><br>" : "+");
+          grades[i] + "</i><br>";
       }
       return div;
     };
